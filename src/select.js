@@ -93,6 +93,7 @@
     placeholder: '', // Empty by default, like HTML tag <select>
     refreshDelay: 1000, // In milliseconds
     closeOnSelect: true,
+    allowCustomSelected: false,
     generateId: function() {
       return latestId++;
     }
@@ -193,6 +194,7 @@
     ctrl.closeOnSelect = true; // Initialized inside uiSelect directive link function
     ctrl.clickTriggeredSelect = false;
     ctrl.$filter = $filter;
+    ctrl.allowCustomSelected = false;
 
     ctrl.isEmpty = function() {
       return angular.isUndefined(ctrl.selected) || ctrl.selected === null || ctrl.selected === '';
@@ -917,6 +919,7 @@
 
         $select.onSelectCallback = $parse(attrs.onSelect);
         $select.onRemoveCallback = $parse(attrs.onRemove);
+        $select.allowCustomOptions = angular.isDefined(attrs.allowCustomSelected) ? $parse(attrs.allowCustomSelected)() : uiSelectConfig.allowCustomSelected;
 
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
@@ -947,13 +950,21 @@
           if (data){
             if ($select.multiple){
               var resultMultiple = [];
+              var matches = /\.(.+)/.exec($select.parserResult.trackByExp);
+              var trackByExists = function(list, input) {
+                for (var x = list.length - 1; x >= 0; x--) {
+                  if(input[matches[1]] === list[x][matches[1]]) {
+                    return true;
+                  }
+                }
+                return false;
+              };
               var checkFnMultiple = function(list, value){
                 if (!list || !list.length) return;
                 for (var p = list.length - 1; p >= 0; p--) {
                   locals[$select.parserResult.itemName] = list[p];
                   result = $select.parserResult.modelMapper(scope, locals);
                   if($select.parserResult.trackByExp){
-                      var matches = /\.(.+)/.exec($select.parserResult.trackByExp);
                       if(matches.length>0 && result[matches[1]] == value[matches[1]]){
                           resultMultiple.unshift(list[p]);
                           return true;
@@ -969,7 +980,20 @@
               if (!inputValue) return resultMultiple; //If ngModel was undefined
               for (var k = inputValue.length - 1; k >= 0; k--) {
                 if (!checkFnMultiple($select.selected, inputValue[k])){
-                  checkFnMultiple(data, inputValue[k]);
+                  //add item to resultMultiple as before
+                  var added = checkFnMultiple(data, inputValue[k]);
+                  //if item wasn't added to resultMultiple and there is a track by set
+                  //and allowCustomOptions is set to true
+                  if(!added && matches && $select.allowCustomOptions) {
+                    //then check if the correct track by is defined
+                    if(angular.isDefined(inputValue[k][matches[1]])) {
+                      //check there isn't already an item in resultMultiple with that track by
+                      if(!trackByExists(resultMultiple, inputValue[k])) {
+                        //add the item
+                        resultMultiple.unshift(inputValue[k]);
+                      }
+                    }
+                  }
                 }
               }
               return resultMultiple;

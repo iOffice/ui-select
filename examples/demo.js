@@ -140,6 +140,11 @@ app.controller('DemoCtrl', function($scope, $http, $timeout) {
   $scope.multipleDemo.selectedPeople2 = $scope.multipleDemo.selectedPeople;
   $scope.multipleDemo.selectedPeopleWithGroupBy = [$scope.people[8], $scope.people[6]];
   $scope.multipleDemo.selectedPeopleSimple = ['samantha@email.com','wladimir@email.com'];
+  $scope.multipleDemo.selectedPeopleCustom = [
+	  { name: 'Samantha',  email: 'something different than array source',  group: 'bar', age: 30 },
+	  { name: 'new person',  email: 'new@new.com',  group: 'bar', age: 30 },
+    { name: 'Adam',  email: 'new@new.com',  group: 'bar', age: 30 }
+  ];
 
 
   $scope.address = {};

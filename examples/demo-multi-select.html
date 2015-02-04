@@ -164,6 +164,20 @@
   <p>Selected: {{multipleDemo.selectedPeopleSimple}}</p>
 
   <hr>
+  <hr>
+  <h3>Array of objects tracked by name and with initial items not in source</h3>
+  <ui-select multiple ng-model="multipleDemo.selectedPeopleCustom" allow-custom-selected="true" theme="bootstrap" ng-disabled="disabled" close-on-select="false" style="width: 800px;" title="Choose a person">
+      <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
+      <ui-select-choices repeat="person in people track by person.name">
+          <div ng-bind-html="person.name | highlight: $select.search"></div>
+          <small>
+              email: {{person.email}}
+              age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
+          </small>
+      </ui-select-choices>
+  </ui-select>
+  <p>Selected: {{multipleDemo.selectedPeopleCustom}}</p>
+  <hr>
   <h3>Array of objects (with groupBy)</h3>
   <ui-select multiple ng-model="multipleDemo.selectedPeopleWithGroupBy" theme="bootstrap" ng-disabled="disabled" close-on-select="false" style="width: 800px;" title="Choose a person">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
