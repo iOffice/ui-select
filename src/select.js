@@ -919,7 +919,7 @@
 
         $select.onSelectCallback = $parse(attrs.onSelect);
         $select.onRemoveCallback = $parse(attrs.onRemove);
-        $select.allowCustomOptions = angular.isDefined(attrs.allowCustomSelected) ? $parse(attrs.allowCustomSelected)() : uiSelectConfig.allowCustomSelected;
+        $select.allowCustomSelected = angular.isDefined(attrs.allowCustomSelected) ? $parse(attrs.allowCustomSelected)() : uiSelectConfig.allowCustomSelected;
 
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
@@ -983,8 +983,8 @@
                   //add item to resultMultiple as before
                   var added = checkFnMultiple(data, inputValue[k]);
                   //if item wasn't added to resultMultiple and there is a track by set
-                  //and allowCustomOptions is set to true
-                  if(!added && matches && $select.allowCustomOptions) {
+                  //and allowCustomSelected is set to true
+                  if(!added && matches && $select.allowCustomSelected) {
                     //then check if the correct track by is defined
                     if(angular.isDefined(inputValue[k][matches[1]])) {
                       //check there isn't already an item in resultMultiple with that track by
