@@ -982,9 +982,9 @@
                 if (!checkFnMultiple($select.selected, inputValue[k])){
                   //add item to resultMultiple as before
                   var added = checkFnMultiple(data, inputValue[k]);
-                  //if item wasn't added to resultMultiple and there is a track by set
+                  //if there is data and item wasn't added to resultMultiple and there is a track by set
                   //and allowCustomSelected is set to true
-                  if(!added && matches && $select.allowCustomSelected) {
+                  if(data.length > 0 && !added && matches && $select.allowCustomSelected) {
                     //then check if the correct track by is defined
                     if(angular.isDefined(inputValue[k][matches[1]])) {
                       //check there isn't already an item in resultMultiple with that track by
